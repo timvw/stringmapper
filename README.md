@@ -3,6 +3,9 @@
 This library automates the task of mapping Strings to Things.
 A typical use-case is parsing CSV into a case class.
 
+[![Build Status](https://api.travis-ci.org/timvw/stringmapper.png?branch=master)](https://travis-ci.org/timvw/stringmapper)
+[![Maven Central](https://img.shields.io/maven-central/v/be.icteam/stringmapper_2.12.svg)](https://maven-badges.herokuapp.com/maven-central/be.icteam/stringmapper_2.12)
+
 ## Usage
 
 ```scala
@@ -47,4 +50,55 @@ implicit val customStringToItem = stringToItem
 val customItemCsvParser = CsvParser[Item]
 assert(customItemCsvParser.parse(malformedLeadingSpaceInId) == Right(Item("sir", "MIKE", 3, Some("x"))))
 ```
+
+## Development
+
+Compile and test:
+
+```bash
+sbt +clean; +cleanFiles; +compile; +test
+```
+
+Install a snapshot in your local maven repository:
+
+```bash
+sbt +publishM2
+```
+
+## Release
+
+Set the following environment variables:
+- PGP_PASSPHRASE
+- PGP_SECRET
+- SONATYPE_USERNAME
+- SONATYPE_PASSWORD
+
+Leveraging the [ci-release](https://github.com/olafurpg/sbt-ci-release) plugin:
+
+```bash
+sbt ci-release
+```
+
+Find the most recent release:
+
+```bash
+git ls-remote --tags $REPO | \
+  awk -F"/" '{print $3}' | \
+  grep '^v[0-9]*\.[0-9]*\.[0-9]*' | \
+  grep -v {} | \
+  sort --version-sort | \
+  tail -n1
+```
+
+Push a new tag to trigger a release via [travis-ci](https://travis-ci.org/github/timvw/stringmapper):
+
+```bash
+v=v1.0.5
+git tag -a $v  -m $v
+git push origin $v
+```
+
+## License
+
+Code is provided under the Apache 2.0 license available at http://opensource.org/licenses/Apache-2.0, as well as in the LICENSE file. This is the same license used as Spark and Frameless.
 
