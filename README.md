@@ -74,26 +74,23 @@ Set the following environment variables:
 - SONATYPE_PASSWORD
 
 ```bash
-
 export SONATYPE_USERNAME=timvw
 export SONATYPE_PASSWORD=XXX
 export PGP_PASSPHRASE=XXX
 export PGP_SECRET=$(gpg --armor --export-secret-keys 0x6E4CD7D2EAC83E19 | base64)
-
-sbt ci-release # release a SNAPSHOT version
-sbt 'set version := "0.0.2"' ci-release # release 0.0.2
 ```
 
 Leveraging the [ci-release](https://github.com/olafurpg/sbt-ci-release) plugin:
 
 ```bash
-sbt ci-release
+sbt ci-release # release a SNAPSHOT version
+CI_COMMIT_TAG=v0.0.2 sbt 'set version := "0.0.2"' ci-release # release 0.0.2
 ```
 
 Find the most recent release:
 
 ```bash
-git ls-remote --tags $REPO | \
+git ls-remote --tags | \
   awk -F"/" '{print $3}' | \
   grep '^v[0-9]*\.[0-9]*\.[0-9]*' | \
   grep -v {} | \
