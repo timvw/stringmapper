@@ -1,5 +1,7 @@
 package be.icteam.stringmapper
 
+import java.time.{LocalDate, LocalDateTime, ZoneId, ZonedDateTime}
+
 import org.scalatest.funsuite.AnyFunSuite
 
 class StringToThingTests extends AnyFunSuite {
@@ -56,5 +58,20 @@ class StringToThingTests extends AnyFunSuite {
     assert(sut.map("3") == Right(Some(3)))
     assert(sut.map("") == Right(None))
     assert(sut.map("X") == Left(List("""java.lang.NumberFormatException: For input string: "X"""")))
+  }
+
+  test("should map localdate as expected") {
+    val sut = implicitly[StringToThing[LocalDate]]
+    assert(sut.map("2020-10-31") == Right(LocalDate.of(2020, 10, 31) ))
+  }
+
+  test("should map localdatetime as expected") {
+    val sut = implicitly[StringToThing[LocalDateTime]]
+    assert(sut.map("2020-10-31T23:59:58") == Right(LocalDateTime.of(2020, 10, 31, 23, 59,58)))
+  }
+
+  test("should map zoneddatetime as expected") {
+    val sut = implicitly[StringToThing[ZonedDateTime]]
+    assert(sut.map("2020-10-31T23:59:58.000Z") == Right(ZonedDateTime.of(LocalDateTime.of(2020, 10, 31, 23, 59,58), ZoneId.of("Z"))))
   }
 }

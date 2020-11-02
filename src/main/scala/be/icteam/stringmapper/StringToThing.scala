@@ -1,5 +1,7 @@
 package be.icteam.stringmapper
 
+import java.time.{LocalDate, LocalDateTime, ZonedDateTime}
+
 import shapeless.labelled._
 
 import scala.util._
@@ -31,6 +33,10 @@ object StringToThing {
     implicit val stringToByte: StringToThing[Byte] = to[Byte](_.toByte)
     implicit val stringToBoolean: StringToThing[Boolean] = to[Boolean](_.toBoolean)
     implicit val stringToString: StringToThing[String] = to[String](identity)
+
+    implicit val stringToLocalDate = StringToThing.to[LocalDate](LocalDate.parse)
+    implicit val stringToLocalDateTime = StringToThing.to[LocalDateTime](LocalDateTime.parse)
+    implicit val stringToZonedDateTime = StringToThing.to[ZonedDateTime](ZonedDateTime.parse)
 
     implicit def stringToOption[T: StringToThing]: StringToThing[Option[T]] = new StringToThing[Option[T]] {
         def map(value: String): MapResult[Option[T]] = {
