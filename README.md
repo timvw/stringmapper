@@ -32,10 +32,12 @@ Customizing StringToThing:
 val stringToItem: StringsToThing[Item] = {
 
     implicit def customIntFieldParser[K <: Symbol]: StringToThing[FieldType[K, Int]] = {
+        // in this example we trim eventual whitespace
         StringToThing.stringTofieldType[K, Int](StringToThing[Int](_.trim.toInt))
     }
 
     implicit def customStringFieldParser[K <: Symbol](implicit witness: Witness.Aux[K]): StringToThing[FieldType[K, String]] = {
+        // in this example we UPPERCASE the value of the 'name' field
         val nameParser = StringToThing[String](_.toUpperCase())
         val hParserToUse =
             if(witness.value == Symbol("name")) nameParser
@@ -48,6 +50,7 @@ val stringToItem: StringsToThing[Item] = {
 
 implicit val customStringToItem = stringToItem
 val customItemCsvParser = CsvParser[Item]
+// the whitespace in ' 3' is ignored and name is in uppercase
 assert(customItemCsvParser.parse(malformedLeadingSpaceInId) == Right(Item("sir", "MIKE", 3, Some("x"))))
 ```
 
